@@ -1,0 +1,121 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: coffee-f5
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: coffee-f5
+  template:
+    metadata:
+      labels:
+        app: coffee-f5
+    spec:
+      containers:
+      - name: coffee-f5
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coffee-svc-nginx-f5
+  labels:
+    app: coffee-f5
+    service: coffee-f5
+spec:
+  clusterIP: None
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: coffee-f5
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tea-f5
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tea-f5
+  template:
+    metadata:
+      labels:
+        app: tea-f5
+    spec:
+      containers:
+      - name: tea-f5
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tea-svc-nginx-f5
+  labels:
+    app: tea-f5
+    service: tea-f5
+spec:
+  clusterIP: None
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: tea-f5
+# ---
+  # apiVersion: extensions/v1beta1
+  # kind: Ingress
+  # metadata:
+  #   name: cafe-f5
+  #   annotations:
+  #     # See the k8s-bigip-ctlr documentation for information about
+  #     # all Ingress Annotations
+  #     # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
+  #     virtual-server.f5.com/ip: "172.16.0.50"
+  #     virtual-server.f5.com/http-port: "80"
+  #     virtual-server.f5.com/partition: "k8s-controller"
+  #     virtual-server.f5.com/balance: "least-connections-node"
+  #     kubernetes.io/ingress.class: "f5"
+  #     # Annotations below are optional
+  #     #  virtual-server.f5.com/balance:
+  #     #  virtual-server.f5.com/http-port:
+  #     #  virtual-server.f5.com/https-port:
+  #     #  ingress.kubernetes.io/allow-http:
+  #     #  ingress.kubernetes.io/ssl-redirect:
+  #     virtual-server.f5.com/health: |
+  #       [
+  #         {
+  #           "path":     "cafe-f5.ipyandy.com/tea",
+  #           "send":     "GET /tea\\r\\n",
+  #           "interval": 5,
+  #           "timeout":  10
+  #         },
+  #         {
+  #           "path":     "cafe-f5.ipyandy.com/coffee",
+  #           "send":     "GET /coffee\\r\\n",
+  #           "interval": 5,
+  #           "timeout":  10
+  #         }
+  #       ]
+  # spec:
+  #   rules:
+  #   - host: cafe-f5.ipyandy.com
+  #     http:
+  #       paths:
+  #       - path: /tea
+  #         backend:
+  #           serviceName: tea-svc-nginx-f5
+  #           servicePort: 80
+  #       - path: /coffee
+  #         backend:
+  #           serviceName: coffee-svc-nginx-f5
+  #           servicePort: 80
