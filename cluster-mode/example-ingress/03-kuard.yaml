@@ -33,68 +33,41 @@ spec:
     app: kuard-f5
   sessionAffinity: None
   type: ClusterIP
-# ---
-# kind: ConfigMap
-# apiVersion: v1
-# metadata:
-#   name: kuard-f5
-#   labels:
-#     f5type: virtual-server
-# data:
-#   # https://clouddocs.f5.com/containers/latest/releases_and_versioning.html#f5-schema
-#   schema: "f5schemadb://bigip-virtual-server_v0.1.7.json"
-#   data: |-
-#     {
-#     "virtualServer": {
-#     "backend": {
-#     "servicePort": 80,
-#     }
-#     },
-#     "frontend": {
-#     "virtualAddress": {
-#     "port": 8080,
-#     "bindAddr": "10.48.100.50"
-#     },
-#     "partition": "k8s-controller",
-#     "balance": "least-connections-member",
-#     "mode": "http"
-#     }
-#     }
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: kuard-f5
-#   annotations:
-#     # See the k8s-bigip-ctlr documentation for information about
-#     # all Ingress Annotations
-#     # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
-#     virtual-server.f5.com/ip: "172.16.0.50"
-#     virtual-server.f5.com/http-port: "80"
-#     virtual-server.f5.com/partition: "k8s-controller"
-#     virtual-server.f5.com/balance: "least-connections-node"
-#     kubernetes.io/ingress.class: "f5"
-#     # Annotations below are optional
-#     #  virtual-server.f5.com/balance:
-#     #  virtual-server.f5.com/http-port:
-#     #  virtual-server.f5.com/https-port:
-#     #  ingress.kubernetes.io/allow-http:
-#     #  ingress.kubernetes.io/ssl-redirect:
-#     virtual-server.f5.com/health: |
-#       [
-#         {
-#           "path":     "kuard-f5.ipyandy.com/",
-#           "send":     "GET /\\r\\n",
-#           "interval": 5,
-#           "timeout":  10
-#         }
-#       ]
-# spec:
-#   rules:
-#   - host: kuard-f5.ipyandy.com
-#     http:
-#       paths:
-#       - path: /
-#         backend:
-#           serviceName: kuard-f5
-#           servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kuard-f5
+  annotations:
+    # See the k8s-bigip-ctlr documentation for information about
+    # all Ingress Annotations
+    # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
+    virtual-server.f5.com/ip: "172.16.0.50"
+    virtual-server.f5.com/http-port: "80"
+    virtual-server.f5.com/partition: "k8s-controller"
+    virtual-server.f5.com/balance: "least-connections-node"
+    kubernetes.io/ingress.class: "f5"
+    # Annotations below are optional
+    #  virtual-server.f5.com/balance:
+    #  virtual-server.f5.com/http-port:
+    #  virtual-server.f5.com/https-port:
+    #  ingress.kubernetes.io/allow-http:
+    #  ingress.kubernetes.io/ssl-redirect:
+    virtual-server.f5.com/health: |
+      [
+        {
+          "path":     "kuard-f5.ipyandy.com/",
+          "send":     "GET /\\r\\n",
+          "interval": 5,
+          "timeout":  10
+        }
+      ]
+spec:
+  rules:
+  - host: kuard-f5.ipyandy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kuard-f5
+          servicePort: 80
