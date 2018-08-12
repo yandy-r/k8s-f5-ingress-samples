@@ -57,41 +57,41 @@ spec:
       run: ghost-f5
     sessionAffinity: None
     type: ClusterIP
-# ---
-  # apiVersion: extensions/v1beta1
-  # kind: Ingress
-  # metadata:
-  #   name: ghost-f5
-  #   annotations:
-  #     # See the k8s-bigip-ctlr documentation for information about
-  #     # all Ingress Annotations
-  #     # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
-  #     virtual-server.f5.com/ip: "172.16.0.50"
-  #     virtual-server.f5.com/http-port: "80"
-  #     virtual-server.f5.com/partition: "k8s-controller"
-  #     virtual-server.f5.com/balance: "least-connections-node"
-  #     kubernetes.io/ingress.class: "f5"
-  #     # Annotations below are optional
-  #     #  virtual-server.f5.com/balance:
-  #     #  virtual-server.f5.com/http-port:
-  #     #  virtual-server.f5.com/https-port:
-  #     #  ingress.kubernetes.io/allow-http:
-  #     #  ingress.kubernetes.io/ssl-redirect:
-  #     virtual-server.f5.com/health: |
-  #       [
-  #         {
-  #           "path":     "ghost-f5.ipyandy.com/",
-  #           "send":     "GET /\\r\\n",
-  #           "interval": 5,
-  #           "timeout":  10
-  #         }
-  #       ]
-  # spec:
-  #   rules:
-  #   - host: ghost-f5.ipyandy.com
-  #     http:
-  #       paths:
-  #       - path: /
-  #         backend:
-  #           serviceName: ghost-f5
-  #           servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ghost-f5
+  annotations:
+    # See the k8s-bigip-ctlr documentation for information about
+    # all Ingress Annotations
+    # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
+    virtual-server.f5.com/ip: "172.16.0.50"
+    virtual-server.f5.com/http-port: "80"
+    virtual-server.f5.com/partition: "k8s-controller"
+    virtual-server.f5.com/balance: "least-connections-node"
+    kubernetes.io/ingress.class: "f5"
+    # Annotations below are optional
+    #  virtual-server.f5.com/balance:
+    #  virtual-server.f5.com/http-port:
+    #  virtual-server.f5.com/https-port:
+    #  ingress.kubernetes.io/allow-http:
+    #  ingress.kubernetes.io/ssl-redirect:
+    virtual-server.f5.com/health: |
+      [
+        {
+          "path":     "ghost-f5.ipyandy.com/",
+          "send":     "GET /\\r\\n",
+          "interval": 5,
+          "timeout":  10
+        }
+      ]
+spec:
+  rules:
+  - host: ghost-f5.ipyandy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ghost-f5
+          servicePort: 80
