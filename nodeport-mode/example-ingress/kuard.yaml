@@ -2,74 +2,47 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: f5-nodeport-kuard
-  name: f5-nodeport-kuard
+    app: f5-kuard
+  name: f5-kuard
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: f5-nodeport-kuard
+      app: f5-kuard
   template:
     metadata:
       labels:
-        app: f5-nodeport-kuard
+        app: f5-kuard
     spec:
       containers:
       - image: gcr.io/kuar-demo/kuard-amd64:1
-        name: f5-nodeport-kuard
+        name: f5-kuard
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: f5-nodeport-kuard
-  name: f5-nodeport-kuard
+    app: f5-kuard
+  name: f5-kuard
 spec:
   ports:
   - port: 80
     protocol: TCP
     targetPort: 8080
   selector:
-    app: f5-nodeport-kuard
+    app: f5-kuard
   sessionAffinity: None
   type: NodePort
-# ---
-# kind: ConfigMap
-# apiVersion: v1
-# metadata:
-#   name: f5-nodeport-kuard
-#   labels:
-#     f5type: virtual-server
-# data:
-#   # https://clouddocs.f5.com/containers/latest/releases_and_versioning.html#f5-schema
-#   schema: "f5schemadb://bigip-virtual-server_v0.1.7.json"
-#   data: |-
-#     {
-#     "virtualServer": {
-#     "backend": {
-#     "servicePort": 80,
-#     }
-#     },
-#     "frontend": {
-#     "virtualAddress": {
-#     "port": 8080,
-#     "bindAddr": "10.48.100.50"
-#     },
-#     "partition": "k8s-controller",
-#     "balance": "least-connections-member",
-#     "mode": "http"
-#     }
-#     }
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: f5-nodeport-kuard
+  name: f5-kuard
   annotations:
     # See the k8s-bigip-ctlr documentation for information about
     # all Ingress Annotations
     # https://clouddocs.f5.com/products/connectors/k8s-bigip-ctlr/latest/#supported-ingress-annotations
-    virtual-server.f5.com/ip: "172.16.0.51"
+    virtual-server.f5.com/ip: "172.16.0.50"
     virtual-server.f5.com/http-port: "80"
     virtual-server.f5.com/partition: "k8s-controller"
     virtual-server.f5.com/balance: "least-connections-node"
@@ -83,7 +56,7 @@ metadata:
     virtual-server.f5.com/health: |
       [
         {
-          "path":     "kuard-n-f5.ipyandy.com/",
+          "path":     "kuard-f5.ipyandy.com/",
           "send":     "HTTP GET /",
           "interval": 5,
           "timeout":  10
@@ -91,10 +64,10 @@ metadata:
       ]
 spec:
   rules:
-  - host: kuard-n-f5.ipyandy.com
+  - host: kuard-f5.ipyandy.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: f5-nodeport-kuard
+          serviceName: f5-kuard
           servicePort: 80
