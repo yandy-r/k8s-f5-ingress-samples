@@ -53,6 +53,7 @@ kubectl apply -f f5-k8s-node/
 ## Configure Static Endpoints (Required inside ESXi)
 
 - Actual mac addresses would need to be found on the K8S Nodes
+
   - On k8s nodes
     - ip -4 addr show
       - will show flannel interface
@@ -63,20 +64,22 @@ kubectl apply -f f5-k8s-node/
       - shows forwarding-database for VXLAN
         - also has mac-address information
 
+- These change after every kubeadm reset
+
 ```bash
-modify net fdb tunnel flannel_vxlan records add { 92:46:e6:df:32:c1 { endpoint 172.16.30.11 } }
-modify net fdb tunnel flannel_vxlan records add { 4a:94:4c:d2:c2:d1 { endpoint 172.16.30.21 } }
-modify net fdb tunnel flannel_vxlan records add { 6e:1e:f8:84:af:7c { endpoint 172.16.30.22 } }
-modify net fdb tunnel flannel_vxlan records add { 12:09:36:c1:2f:6e { endpoint 172.16.30.23 } }
+modify net fdb tunnel flannel_vxlan records add { 46:03:26:d0:df:b8 { endpoint 172.16.30.11 } }
+modify net fdb tunnel flannel_vxlan records add { d2:09:ce:e3:e4:75 { endpoint 172.16.30.21 } }
+modify net fdb tunnel flannel_vxlan records add { ee:ef:e3:c5:c1:d3 { endpoint 172.16.30.22 } }
+modify net fdb tunnel flannel_vxlan records add { be:4d:65:46:78:9e { endpoint 172.16.30.23 } }
 ```
 
 - To delete the endpoints (if testing)
 
 ```bash
-modify net fdb tunnel flannel_vxlan records del { 92:46:e6:df:32:c1 }
-modify net fdb tunnel flannel_vxlan records del { 4a:94:4c:d2:c2:d1 }
-modify net fdb tunnel flannel_vxlan records del { 6e:1e:f8:84:af:7c }
-modify net fdb tunnel flannel_vxlan records del { 12:09:36:c1:2f:6e }
+modify net fdb tunnel flannel_vxlan records del { 46:03:26:d0:df:b8 }
+modify net fdb tunnel flannel_vxlan records del { d2:09:ce:e3:e4:75 }
+modify net fdb tunnel flannel_vxlan records del { ee:ef:e3:c5:c1:d3 }
+modify net fdb tunnel flannel_vxlan records del { be:4d:65:46:78:9e }
 ```
 
 - verify VXLAN
