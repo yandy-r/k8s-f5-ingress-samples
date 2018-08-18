@@ -25,13 +25,13 @@ create /net tunnels tunnel flannel_vxlan key 1 profile fl-vxlan local-address 17
   - If you use the BIG-IP configuration utility to create a self IP, you may need to provide the full netmask instead of the CIDR notation.
 
 ```bash
-create /net self 10.244.255.1/12 allow-service none vlan flannel_vxlan
+create /net self 10.244.255.1/16 allow-service none vlan flannel_vxlan
 ```
 
 - Create a floating IP address in the flannel subnet you assigned to the BIG-IP device.
 
 ```bash
-create /net self 10.244.255.2/12 allow-service none traffic-group traffic-group-1 vlan flannel_vxlan
+create /net self 10.244.255.2/16 allow-service none traffic-group traffic-group-1 vlan flannel_vxlan
 ```
 
 ## All Commands
@@ -40,8 +40,8 @@ create /net self 10.244.255.2/12 allow-service none traffic-group traffic-group-
 cd ../k8s-controller/
 create /net tunnels vxlan fl-vxlan port 8472 flooding-type none
 create /net tunnels tunnel flannel_vxlan key 1 profile fl-vxlan local-address 172.16.30.3
-create /net self 10.244.255.1/12 allow-service none vlan flannel_vxlan
-create /net self 10.244.255.2/12 allow-service none traffic-group traffic-group-1 vlan flannel_vxlan
+create /net self 10.244.255.1/16 allow-service none vlan flannel_vxlan
+create /net self 10.244.255.2/16 allow-service none traffic-group traffic-group-1 vlan flannel_vxlan
 ```
 
 ## Create Dummy Node (required)
